@@ -9,7 +9,7 @@ xgboost
 scipy
 scipy
 fastapi
-uvicorn[standad]
+uvicorn[standard]
 flask
 openpyxl
 jinja2
