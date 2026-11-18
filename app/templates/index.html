@@ -4,114 +4,310 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart Irrigation System</title>
+    <title>Smart Irrigation System - AI Actuation Dashboard</title>
     <link rel="stylesheet" href="/static/css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/static/js/script.js"></script>
 </head>
 
 <body>
 
+    <!-- Navigation Bar -->
     <nav class="navbar">
         <div class="logo">SMART<span>IRRIGATION</span></div>
         <div class="nav-links">
             <a href="#home">Home</a>
-            <a href="#about">About</a>
-            <a href="#technology">Technology</a>
+            <a href="#about">Overview</a>
+            <a href="#dataset">Dataset</a>
             <a href="#models">Models</a>
+            <a href="#predict">Live Predict</a>
+            <a href="#regression">Regression</a>
         </div>
     </nav>
 
+    <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <span class="tag">DATA MINING PROJECT</span>
+            <span class="tag">PRECISION AGRICULTURE & ML</span>
             <h1>Smart Irrigation<br><span>System</span></h1>
             <p>
-                Intelligent irrigation decisions through environmental
-                data analysis and machine learning.
+                Intelligent water pump actuation through real-time environmental 
+                monitoring, soil electrical resistance analysis, and machine learning classification.
             </p>
-            <a href="#about" class="btn">Explore Project →</a>
+            <div class="hero-actions">
+                <a href="#predict" class="btn">Test Live Prediction →</a>
+                <a href="#models" class="btn btn-outline">Explore Models</a>
+            </div>
         </div>
 
         <div class="hero-info">
             <div class="info-card">
-                <h2>AI</h2>
-                <p>Machine Learning</p>
+                <h2>100%</h2>
+                <p>Decision Tree Test Accuracy</p>
             </div>
             <div class="info-card">
-                <h2>DATA</h2>
-                <p>Environmental Analysis</p>
+                <h2>5,857</h2>
+                <p>15-Min Sensor Observations</p>
+            </div>
+            <div class="info-card">
+                <h2>61 Days</h2>
+                <p>Continuous Time Series</p>
             </div>
         </div>
     </section>
 
+    <!-- Project Overview & Stats -->
     <section class="about section" id="about">
         <span class="tag">01 / PROJECT OVERVIEW</span>
+        <h2>Environmental & Soil Monitoring</h2>
+        <p>
+            The Smart Irrigation System analyzes time-series sensor data to predict irrigation actuator 
+            states (`DC Water pump Status`), enabling autonomous, data-driven irrigation management.
+        </p>
+
         <div class="stats-grid">
             <div class="stat-card">
                 <h3 id="total-records">-</h3>
                 <p>Total Records</p>
+                <span class="stat-sub" id="date-range">Loading dates...</span>
             </div>
 
             <div class="stat-card">
                 <h3 id="total-columns">-</h3>
                 <p>Dataset Features</p>
+                <span class="stat-sub">3 Inputs + 1 Target</span>
             </div>
 
             <div class="stat-card">
                 <h3 id="pump-off">-</h3>
-                <p>Pump OFF</p>
+                <p>Pump OFF (0)</p>
+                <span class="stat-sub" id="pump-off-pct">- %</span>
             </div>
 
             <div class="stat-card">
                 <h3 id="pump-on">-</h3>
-                <p>Pump ON</p>
+                <p>Pump ON (1)</p>
+                <span class="stat-sub" id="pump-on-pct">- %</span>
             </div>
         </div>
-        <h2>Smarter Water Management</h2>
-        <p>
-            Smart Irrigation System is a data mining project that analyzes
-            environmental and soil conditions to support intelligent
-            irrigation decisions.
-        </p>
     </section>
-    <section class="section" id="dataset">
-        <span class="tag">04 / DATASET ANALYSIS</span>
-        <h2>Dataset Distribution</h2>
-        <p>Distribution of irrigation pump status in the dataset.</p>
 
-        <div class="chart-container">
-            <canvas id="pumpChart"></canvas>
+    <!-- Dataset Analysis & Charts -->
+    <section class="section dataset-section" id="dataset">
+        <span class="tag">02 / DATASET & SENSOR ANALYTICS</span>
+        <h2>Dataset Distribution & Sensor Statistics</h2>
+        <p>
+            Exploration of actuator state proportions and environmental sensor boundaries 
+            (`project_dataset.csv`).
+        </p>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Target Class Distribution (Actuator State)</h3>
+                <p class="chart-desc">Proportion of Pump OFF vs ON states across 5,857 intervals.</p>
+                <div class="chart-container-doughnut">
+                    <canvas id="pumpChart"></canvas>
+                </div>
+            </div>
+
+            <div class="chart-card">
+                <h3>Sensor Range & Central Tendency</h3>
+                <p class="chart-desc">Comparison of mean, minimum, and maximum sensor readings.</p>
+                <div class="chart-container-bar">
+                    <canvas id="featuresChart"></canvas>
+                </div>
+            </div>
         </div>
     </section>
 
+    <!-- Machine Learning Models Benchmarking -->
+    <section class="models section" id="models">
+        <span class="tag">03 / MACHINE LEARNING BENCHMARKS</span>
+        <h2>Model Evaluation & Comparison</h2>
+        <p>
+            Six classification algorithms evaluated on an unseen 20% chronological holdout test set ($n=1,172$) 
+            with 5-fold TimeSeriesSplit cross-validation on training data.
+        </p>
+
+        <!-- Threshold Discovery Alert -->
+        <div class="alert-box">
+            <strong>Engineering Discovery (500-Ohm Threshold):</strong>
+            Decision Tree and Random Forest achieve 100% test accuracy because the hardware controller operates 
+            on an exact deterministic rule: <em>Soil Moisture Resistance &ge; 500 &Omega; &rarr; Pump ON</em>. 
+            Distance-based models (KNN, SVM, Logistic Regression) exhibit minor boundary smoothing around 500 &Omega;.
+        </div>
+
+        <div class="models-grid">
+            <div class="chart-card full-width">
+                <h3>Test Set Performance Comparison (Accuracy, F1-Score & ROC-AUC)</h3>
+                <div class="chart-container-models">
+                    <canvas id="modelsChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table class="models-table">
+                <thead>
+                    <tr>
+                        <th>Algorithm</th>
+                        <th>Accuracy</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1-Score</th>
+                        <th>ROC-AUC</th>
+                        <th>Confusion Matrix [TN, FP, FN, TP]</th>
+                    </tr>
+                </thead>
+                <tbody id="models-table-body">
+                    <tr>
+                        <td colspan="7" class="loading-cell">Loading model evaluation metrics...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Live Prediction Form -->
+    <section class="predict-section section" id="predict">
+        <span class="tag">04 / LIVE PREDICTION</span>
+        <h2>Actuator Status Inference</h2>
+        <p>
+            Simulate instantaneous sensor inputs and evaluate actuator response via 
+            our production <code>POST /api/predict</code> pipeline.
+        </p>
+
+        <div class="predict-container">
+            <form id="prediction-form" class="predict-form">
+                <div class="form-group">
+                    <label for="soil_resistance">
+                        Soil Moisture Resistance (&Omega;)
+                        <span class="hint">Physical Range: 0 - 5000 &Omega; (Threshold: ~500 &Omega;)</span>
+                    </label>
+                    <input type="number" id="soil_resistance" name="soil_resistance" step="1" min="0" max="5000" value="525" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="temperature">
+                        Ambient Temperature (&deg;C)
+                        <span class="hint">Agricultural Range: -10&deg;C to 60&deg;C</span>
+                    </label>
+                    <input type="number" id="temperature" name="temperature" step="0.1" min="-10" max="60" value="31.2" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="humidity">
+                        Atmospheric Humidity (%)
+                        <span class="hint">Physical Range: 0% to 100%</span>
+                    </label>
+                    <input type="number" id="humidity" name="humidity" step="1" min="0" max="100" value="45" required>
+                </div>
+
+                <button type="submit" id="btn-predict" class="btn btn-full">
+                    <span id="btn-text">Predict Pump Status</span>
+                    <span id="btn-spinner" class="spinner hidden"></span>
+                </button>
+            </form>
+
+            <div class="prediction-output-box">
+                <div id="prediction-placeholder" class="prediction-placeholder">
+                    <p>Enter sensor readings and click <strong>Predict Pump Status</strong> to see inference results.</p>
+                </div>
+
+                <div id="prediction-result" class="prediction-result hidden">
+                    <div class="result-header">
+                        <span class="result-label">Actuator State</span>
+                        <div id="status-badge" class="status-badge">PUMP ON</div>
+                    </div>
+                    <div class="result-details">
+                        <div class="detail-row">
+                            <span>Predicted Class:</span>
+                            <strong id="res-class">-</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>Engine / Model:</span>
+                            <strong id="res-model">-</strong>
+                        </div>
+                        <div class="detail-row">
+                            <span>Soil Resistance:</span>
+                            <span id="res-res">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Temperature:</span>
+                            <span id="res-temp">-</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Humidity:</span>
+                            <span id="res-hum">-</span>
+                        </div>
+                    </div>
+                    <p class="disclaimer-note" id="res-note"></p>
+                </div>
+
+                <div id="prediction-error" class="prediction-error hidden"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Water Quantity Regression Section (Pending Status) -->
+    <section class="section regression-section" id="regression">
+        <span class="tag">05 / WATER QUANTITY REGRESSION</span>
+        <h2>Irrigation Volume Estimation</h2>
+        
+        <div class="pending-card">
+            <div class="pending-badge">STATUS: PENDING DATA COLLECTION</div>
+            <h3>Volumetric Water Flow Prediction is Currently Inactive</h3>
+            <p>
+                The primary objective of automated precision irrigation is not merely binary pump switching, 
+                but exact volumetric dosing (liters or m&sup3; per irrigation cycle).
+            </p>
+            <div class="pending-reasons">
+                <div class="reason-item">
+                    <h4>Why is Regression Disabled?</h4>
+                    <p>
+                        The current dataset (<code>project_dataset.csv</code>) contains actuator binary status 
+                        (<code>DC Water pump Status</code>) but lacks quantitative flow meter or applied water volume measurements.
+                    </p>
+                </div>
+                <div class="reason-item">
+                    <h4>Scientific & Ethical Guardrail</h4>
+                    <p>
+                        In adherence to rigorous empirical principles, <strong>no synthetic water volume target has been fabricated</strong>, 
+                        and pump status is not falsely modeled as a continuous water volume quantity.
+                    </p>
+                </div>
+                <div class="reason-item">
+                    <h4>Future Roadmap</h4>
+                    <p>
+                        Integration of in-line pulse water flow meters (e.g., YF-S201) will enable high-precision regression 
+                        models (Gradient Boosting / ElasticNet) to forecast exact liters required per irrigation event.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
     <section class="technology section" id="technology">
-        <span class="tag">02 / TECHNOLOGIES</span>
-        <h2>Built with Data & AI</h2>
+        <span class="tag">06 / TECHNOLOGIES</span>
+        <h2>Built with Modern Data Science & AI</h2>
 
         <div class="tech-grid">
-            <div class="tech-card">Python</div>
+            <div class="tech-card">Python 3.9+</div>
             <div class="tech-card">FastAPI</div>
-            <div class="tech-card">Pandas</div>
-            <div class="tech-card">Scikit-learn</div>
-            <div class="tech-card">Machine Learning</div>
-            <div class="tech-card">Jupyter Notebook</div>
+            <div class="tech-card">Scikit-learn Pipeline</div>
+            <div class="tech-card">Pandas & NumPy</div>
+            <div class="tech-card">Decision Trees & Random Forest</div>
+            <div class="tech-card">Chart.js Visualizations</div>
         </div>
     </section>
 
-    <section class="models section" id="models">
-        <span class="tag">03 / MACHINE LEARNING</span>
-        <h2>Our Algorithms</h2>
-        <p>Six machine learning algorithms will be trained and compared.</p>
-        <div class="model-placeholder">
-            Model results will be displayed here after training.
-        </div>
-    </section>
-
+    <!-- Footer -->
     <footer>
-        <p>Smart Irrigation System | Data Mining Project | 2026</p>
+        <p>Smart Irrigation System | Precision Agriculture & Data Mining Project | 2026</p>
     </footer>
 
+    <!-- Scripts -->
+    <script src="/static/js/script.js"></script>
 </body>
 
 </html>
